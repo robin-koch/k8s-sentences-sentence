@@ -1,21 +1,42 @@
 package main
 
 import (
+	"flag"
     "fmt"
     "io/ioutil"
     "log"
-    "net/http"
+	"net/http"
+	"github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-    name := makeRequest("http://name:8080")
-    age := makeRequest("http://age:8080")
-    fmt.Fprintf(w, "%s is %s years", name, age)
+type Config struct {
+	ageService    string
+	nameService   string
 }
 
-func main() {
-    http.HandleFunc("/", handler)
-    log.Fatal(http.ListenAndServe(":8080", nil))
+var config Config
+
+var (
+    httpReqs = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "sentence_requests_total",
+			Help: "Number of requests",
+		},
+		[]string{"type"},
+	)
+)
+
+func handler(httpReqs *prometheus.CounterVec) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        name := makeRequest(config.nameService)
+		age := makeRequest(config.ageService)
+
+		fmt.Fprintf(w, "%s is %s years", name, age)
+
+        m := httpReqs.WithLabelValues("sentence")
+        m.Inc()
+    }
 }
 
 func makeRequest(url string) string {
@@ -30,4 +51,16 @@ func makeRequest(url string) string {
 	}
 
 	return string(body)
+}
+
+func main() {
+	flag.StringVar(&config.ageService, "age-service", "http://127.0.0.1:8888", "age service")
+    flag.StringVar(&config.nameService, "name-service", "http://127.0.0.1:8889", "name service")
+	flag.Parse()
+
+	prometheus.MustRegister(httpReqs)
+
+    http.HandleFunc("/", handler(httpReqs))
+    http.Handle("/metrics", promhttp.Handler())
+    log.Fatal(http.ListenAndServe(":8080", nil))
 }
