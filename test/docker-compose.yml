@@ -4,16 +4,18 @@ services:
     build: .
     environment:
       SERVICE_URL: http://web:8080
+      METRICS_URL: http://web:8080/metrics
     depends_on:
       - web
       - name
       - age
   web:
-    image: ${USERN}/sentence:1.0
+    image: ${docker_username}/sentence:1.0
+    command: /sentence --age-service http://age:8080 --name-service http://name:8080
     ports: 
       - 8080:8080
   name:
-    image: ${USERN}/name:1.0
+    image: ${docker_username}/name:1.0
   age:
-    image: ${USERN}/age:1.0
+    image: ${docker_username}/age:1.0
   
