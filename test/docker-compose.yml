@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  sut:
+    build: .
+    environment:
+      SERVICE_URL: http://web:8080
+    depends_on:
+      - web
+      - name
+      - age
+  web:
+    image: ${USERN}/sentence:1.0
+    ports: 
+      - 8080:8080
+  name:
+    image: ${USERN}/name:1.0
+  age:
+    image: ${USERN}/age:1.0
+  

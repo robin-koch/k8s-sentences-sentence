@@ -1,5 +1,5 @@
 #!/bin/bash
 
-docker push hoeghh/sentence:1.0 &
+docker push "$usern/sentence:1.0" &
 
 wait
