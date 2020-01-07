@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t "$usern/sentence:1.0" ./app
+docker build -t "$docker_username/sentence:1.0" ./app

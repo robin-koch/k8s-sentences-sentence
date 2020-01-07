@@ -9,11 +9,11 @@ services:
       - name
       - age
   web:
-    image: ${USERN}/sentence:1.0
+    image: ${docker_username}/sentence:1.0
     ports: 
       - 8080:8080
   name:
-    image: ${USERN}/name:1.0
+    image: ${docker_username}/name:1.0
   age:
-    image: ${USERN}/age:1.0
+    image: ${docker_username}/age:1.0
   
