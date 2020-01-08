@@ -18,11 +18,19 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "sentence.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8080'
+        prometheus.io/path: '/metrics'
     spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: [
+            '--age-service', 'http://sentence-age:8080',
+            '--name-service', 'http://sentence-name:8080'
+	  ]
           ports:
             - name: http
               containerPort: 8080
