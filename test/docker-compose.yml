@@ -10,12 +10,12 @@ services:
       - name
       - age
   web:
-    image: ${docker_username}/sentence:1.0
+    image: ${docker_username}/sentence:latest
     command: --age-service http://age:8080 --name-service http://name:8080
     ports: 
       - 8080:8080
   name:
-    image: ${docker_username}/name:1.0
+    image: ${docker_username}/name:latest
   age:
-    image: ${docker_username}/age:1.0
+    image: ${docker_username}/age:latest
   
