@@ -14,4 +14,4 @@ FROM scratch
 COPY --from=builder /go/bin/sentence /sentence
 COPY --from=builder /etc/passwd /etc/passwd
 USER scratchuser
-CMD ["/sentence"]
+ENTRYPOINT ["/sentence"]
