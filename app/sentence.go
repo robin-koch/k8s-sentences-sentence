@@ -33,7 +33,8 @@ func handler(httpReqs *prometheus.CounterVec) http.HandlerFunc {
 		name := makeRequest(config.nameService)
 		age := makeRequest(config.ageService)
 
-		fmt.Fprintf(w, "%s is %s years", name, age)
+		fmt.Fprintf(w, "%s years %s is", age, name)
+		//fmt.Fprintf(w, "%s is %s years", name, age)
 
 		m := httpReqs.WithLabelValues("sentence")
 		m.Inc()
